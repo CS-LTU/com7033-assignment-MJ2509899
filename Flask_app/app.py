@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_wtf.csrf import CSRFProtect
 from models.auth_db import init_auth_db, register_user, validate_user
-from models.patient_db import init_patient_db, add_patient, get_all_patients, get_patient, update_patient, delete_patient
+from models.pateint_db import init_patient_db, add_patient, get_all_patients, get_patient, update_patient, delete_patient
 
 app = Flask(__name__)
 app.secret_key = 'your_secure_random_secret'
