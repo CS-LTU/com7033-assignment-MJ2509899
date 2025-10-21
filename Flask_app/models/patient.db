@@ -1,0 +1,13 @@
+@app.route("/add", methods=["GET", "POST"])
+def add_patient():
+    if request.method == "POST":
+        name = request.form["name"]
+        age = request.form["age"]
+        disease = request.form["disease"]
+        conn = sqlite3.connect("database/patients.db")
+        cur = conn.cursor()
+        cur.execute("INSERT INTO patients (name, age, disease) VALUES (?, ?, ?)", (name, age, disease))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("home"))
+    return render_template("add_patient.html")
