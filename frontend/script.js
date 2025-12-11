@@ -86,7 +86,6 @@ const handleFormSubmission = async (e) => {
   const isUpdate = !!document.getElementById('patientId').value;
   const userPerms = getCurrentPermissions();
   
-  // Front-end permission check (Back-end enforces this again)
   if (isUpdate && !userPerms.canEdit) {
     alert('Permission Denied: You cannot update records.');
     return;
@@ -192,7 +191,7 @@ const populateFormForEdit = async (patientId) => {
     return;
   }
 
-  // Fetch all patients (again with role param) and find the one to edit
+  // Fetch all patients and find the one to edit
   try {
     const response = await fetch(`${API_BASE}?role=${userRole}`);
     const patients = await response.json();
