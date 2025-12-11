@@ -1,0 +1,6 @@
+patient_id,name,age,gender,diagnosis,treatment
+1,John Doe,45,Male,Hypertension,Medication
+2,Jane Smith,32,Female,Diabetes,Insulin
+3,Bob Johnson,58,Male,Heart Disease,Surgery
+4,Alice Brown,29,Female,Asthma,Inhaler
+5,Charlie Wilson,67,Male,Cancer,Chemotherapy
