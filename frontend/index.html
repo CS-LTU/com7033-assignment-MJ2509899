@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management System - CRUD</title>
+    
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" 
+        crossorigin="anonymous"
+    >
+    <style>
+        .login-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        /* Hide the dashboard initially */
+        #dashboard-view { display: none; }
+        .edit-form-heading {
+            color: #0d6efd; /* Blue text for Edit mode */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-view" class="login-container">
+        <div class="card login-card">
+            <h2 class="card-title text-center mb-4">
+                Hospital Management System
+            </h2>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="userId" class="form-label">User ID (e.g., admin)</label>
+                    <input type="text" class="form-control" id="userId" value="admin" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password (e.g., 1234)</label>
+                    <input type="password" class="form-control" id="password" value="1234" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Log In</button>
+                <small class="text-muted mt-2 d-block text-center">Use admin/1234 to login.</small>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-view">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">HMS Admin</a>
+                <span class="navbar-text me-3">
+                    <span id="loggedInUser"></span>
+                </span>
+                <button id="logoutBtn" class="btn btn-outline-light btn-sm">Log Out</button>
+            </div>
+        </nav>
+
+        <div class="container-fluid p-4">
+            
+            <ul class="nav nav-tabs" id="hmsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="view-tab" data-bs-toggle="tab" data-bs-target="#view-patients" type="button" role="tab">
+                        View/Manage Patients
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="add-tab" data-bs-toggle="tab" data-bs-target="#manage-patient" type="button" role="tab">
+                        Add New Patient
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3">
+                
+                <div class="tab-pane fade show active" id="view-patients" role="tabpanel" aria-labelledby="view-tab">
+                    
+                    <h3 class="mb-3">Patient Registry</h3>
+                    
+                    <div class="d-flex mb-3">
+                        <input type="text" class="form-control me-2" id="searchPatientInput" placeholder="Search by Name or ID...">
+                        <button class="btn btn-outline-secondary" id="searchPatientBtn">Search</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Patient ID</th>
+                                    <th>Name</th>
+                                    <th>DOB</th>
+                                    <th>Ward/Room</th>
+                                    <th>Admission Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientTableBody">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="manage-patient" role="tabpanel" aria-labelledby="add-tab">
+                    
+                    <h3 id="formTitle" class="mb-3">Add New Patient Record</h3>
+                    
+                    <form id="patientForm">
+                        <input type="hidden" id="patientId" value=""> <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="patientName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="patientName" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="patientDOB" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="patientDOB" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="patientGender" class="form-label">Gender</label>
+                                <select id="patientGender" class="form-select" required>
+                                    <option value="" disabled selected>Choose...</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="patientAddress" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="patientAddress" placeholder="1234 Main St">
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="patientWard" class="form-label">Ward/Room Number</label>
+                                <input type="text" class="form-control" id="patientWard" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="admissionDate" class="form-label">Admission Date</label>
+                                <input type="date" class="form-control" id="admissionDate" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="referringDoctor" class="form-label">Referring Doctor</label>
+                                <select id="referringDoctor" class="form-select" required>
+                                    <option value="" disabled selected>Choose...</option>
+                                    <option>Dr. Lee</option>
+                                    <option>Dr. Chen</option>
+                                    <option>Dr. Singh</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" id="savePatientBtn" class="btn btn-success me-2">Save New Record</button>
+                                <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="display:none;">Cancel Edit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script 
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
+        crossorigin="anonymous"
+    ></script>
+    <script src="script.js"></script>
+</body>
+</html>
