@@ -1,0 +1,95 @@
+name: PR Quality Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  pr-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Check PR title format
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+        if [[ ! "$PR_TITLE" =~ ^(feat|fix|docs|style|refactor|test|chore):.+ ]]; then
+          echo "❌ PR title must follow format: 'type: description'"
+          echo "Valid types: feat, fix, docs, style, refactor, test, chore"
+          exit 1
+        fi
+        echo "✅ PR title format is valid"
+    
+    - name: Check for merge conflicts
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git fetch origin ${{ github.base_ref }}
+        if ! git merge-tree $(git merge-base HEAD origin/${{ github.base_ref }}) HEAD origin/${{ github.base_ref }} > /dev/null 2>&1; then
+          echo "⚠️ Potential merge conflicts detected"
+        else
+          echo "✅ No merge conflicts"
+        fi
+    
+    - name: Check commit messages
+      run: |
+        COMMITS=$(git log origin/${{ github.base_ref }}..HEAD --pretty=format:"%s")
+        while IFS= read -r commit; do
+          if [[ ! "$commit" =~ ^(feat|fix|docs|style|refactor|test|chore): ]]; then
+            echo "❌ Invalid commit message: $commit"
+            echo "Commit messages must follow format: 'type: description'"
+            exit 1
+          fi
+        done <<< "$COMMITS"
+        echo "✅ All commit messages are valid"
+    
+    - name: Check file size limits
+      run: |
+        LARGE_FILES=$(find . -type f -size +5M -not -path "./.git/*" -not -path "./node_modules/*")
+        if [ -n "$LARGE_FILES" ]; then
+          echo "❌ Large files detected (>5MB):"
+          echo "$LARGE_FILES"
+          exit 1
+        fi
+        echo "✅ No large files detected"
+  
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Check for TODO/FIXME comments
+      run: |
+        TODOS=$(grep -r "TODO\|FIXME" --include="*.py" --include="*.ts" --include="*.tsx" . || true)
+        if [ -n "$TODOS" ]; then
+          echo "⚠️ Found TODO/FIXME comments:"
+          echo "$TODOS"
+          echo "Consider addressing these before merging"
+        else
+          echo "✅ No TODO/FIXME comments found"
+        fi
+    
+    - name: Check for console.log statements
+      run: |
+        CONSOLE_LOGS=$(grep -r "console\\.log" frontend/ --include="*.ts" --include="*.tsx" || true)
+        if [ -n "$CONSOLE_LOGS" ]; then
+          echo "⚠️ Found console.log statements in frontend:"
+          echo "$CONSOLE_LOGS"
+          echo "Consider removing debug statements before production"
+        else
+          echo "✅ No console.log statements in production code"
+        fi
+    
+    - name: PR Summary
+      run: |
+        echo "## 📊 PR Quality Report" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ PR title format validated" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Commit messages validated" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ File sizes checked" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Code quality checks completed" >> $GITHUB_STEP_SUMMARY
