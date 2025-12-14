@@ -28,6 +28,7 @@ A full-stack web application for healthcare professionals to manage patient data
   - SQLite for primary operations (authentication & patient data)
   - MongoDB Atlas ready for cloud scalability
   - Seamless database switching capability
+Add ci/cd pipeline for future changings
 
 ## 🛠️ Technology Stack
 
