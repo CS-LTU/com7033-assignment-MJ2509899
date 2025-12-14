@@ -311,16 +311,45 @@ assignment/
 4. Push to the branch: `git push origin feature-name`
 5. Submit a pull request
 
+## � Results & Screenshots
+
+### Frontend Application
+The React-based user interface provides an intuitive experience for healthcare professionals to manage patient data and view stroke predictions.
+
+![Frontend Dashboard](screenshots/frontend.png)
+*Interactive dashboard showing patient data visualization with charts and statistics*
+
+### Backend API Server
+Flask REST API server running on port 5000, handling authentication and patient data operations.
+
+![Backend Server](screenshots/backend.png)
+*Backend server console showing successful API initialization and MongoDB connection*
+
+### MongoDB Atlas Database
+Cloud-based NoSQL database storing 5,110 patient records with full CRUD operations.
+
+![MongoDB Atlas](screenshots/mongo.png)
+*MongoDB Atlas cluster showing the healthcare_db database with patient collection*
+
+### SQLite Database
+Local SQL database for user authentication and session management.
+
+![SQLite Database](screenshots/sql.png)
+*SQLite database structure showing user authentication tables*
+
+---
+
 ## 📝 License
 
 This project is part of an academic assignment.
 
 ## 👥 Authors
 
-- Your Name - Initial work
+- Muzamil Habib - Full-stack development and database integration
 
 ## 🙏 Acknowledgments
 
 - Medical data patterns based on healthcare research
 - UI/UX inspired by modern healthcare systems
+- MongoDB Atlas for cloud database hosting
 - Built with ❤️ for healthcare professionals
