@@ -1,0 +1,5 @@
+{
+  "name": "NeuroGuard - Stroke Prediction Manager",
+  "description": "A secure patient management dashboard for stroke prediction datasets. Features secure authentication simulation, patient CRUD operations, and data visualization.",
+  "requestFramePermissions": []
+}
